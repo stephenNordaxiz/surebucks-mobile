@@ -6,6 +6,8 @@ import { useUniversalModal } from '@/hooks/useUniversalModal'
 import { useAuthStore } from '@/stores/authStore'
 import { nav } from '@/utils/navigationService'
 import { dialCodeType } from '@/types/dialCode'
+import { AuthApi } from '@/api/auth.api'
+// import { PhoneNumber } from 'libphonenumber-js'
 // import { useThemeStore } from '@/stores/themeStore'
 
 const RegisterScreen = () => {
@@ -13,6 +15,7 @@ const RegisterScreen = () => {
 	// const theme = useThemeStore((s) => s.theme)
 	const phoneDetails = useAuthStore((s) => s.phone)
 	const setPhoneNumber = useAuthStore((s) => s.setPhone)
+	const [loading, setLoading] = useState(false)
 	const [showModal, setShowModal] = useState<boolean>(false)
 	const [dialCode, setDialCode] = useState({
 		code: 'NG',
@@ -28,7 +31,7 @@ const RegisterScreen = () => {
 	const { showError } = useUniversalModal()
 
 	const handleSubmit = () => {
-		if (phone.length === 0) {
+		if (!phone || phone.length < 10) {
 			showError('Error', 'Phone number required')
 			return
 		}
@@ -38,12 +41,13 @@ const RegisterScreen = () => {
 			return
 		}
 		const fullPhone = normalizePhoneNumber(phone, dialCode?.dial_code)
+
 		setPhoneNumber({
 			dialCode: dialCode?.dial_code,
 			phoneNumber: phone,
 			fullPhoneNumber: fullPhone,
 		})
-		console.log(fullPhone)
+		// console.log(fullPhone)
 		setShowModal(!showModal)
 	}
 	const handleDialCodeChange = (country: dialCodeType) => {
@@ -51,9 +55,20 @@ const RegisterScreen = () => {
 		console.log('Selected Country:', country)
 	}
 
-	const handleYes = () => {
+	const handleYes = async () => {
+		setLoading(true)
 		setShowModal(false)
-		nav('/verify', { from: 'register' })
+		// nav('/verify', { from: 'register' })
+		try {
+			const fullPhone = phoneDetails?.fullPhoneNumber
+			const res = await AuthApi.requestOtp(fullPhone as string)
+			console.log(res)
+			nav('/verify', { from: 'register' })
+		} catch (error: any) {
+			showError("Error", error?.response?.data?.error || "Failed to send OTP")
+		} finally {
+			setLoading(false)
+		}
 	}
 
 	const ConfirmationBtn = ({ text, onPress }: { text: string; onPress: () => void }) => {
@@ -74,7 +89,7 @@ const RegisterScreen = () => {
 	}
 	return (
 		<Screen style={styles.container}>
-			<AuthWrapper onPress={handleSubmit} type="register">
+			<AuthWrapper onPress={handleSubmit} type="register" loading={loading}>
 				<View>
 					<CustomInput
 						label={''}
