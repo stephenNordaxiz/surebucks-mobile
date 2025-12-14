@@ -54,15 +54,16 @@ const VerifyNumberScreen = () => {
           ? phoneDetails?.fullPhoneNumber || ""
           : (phone as string);
 
-      console.log("Verifying OTP:", phoneToVerify, otpValue);
+      // console.log("Verifying OTP:", phoneToVerify, otpValue);
 
       const res = await AuthApi.verifyOtp(phoneToVerify, otpValue);
 		console.log(res)
       nav("/password", {
         from: from === "register" ? "verify-to-new" : "verify-to-reset",
+        phone: phoneToVerify,
+        otp: otpValue,
       });
     } catch (error: any) {
-    //   console.log("OTP verification error:", error?.response?.data);
 
       Alert.alert(
         "Verification Failed",

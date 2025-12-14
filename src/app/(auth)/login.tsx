@@ -4,13 +4,16 @@ import { AuthWrapper, CustomInput, Screen } from '@/components'
 import { useAuthStore } from '@/stores/authStore'
 import { dialCodeType } from '@/types/dialCode'
 import { nav } from '@/utils/navigationService'
+import { AuthApi } from '@/api/auth.api'
 
 const LoginScreen = () => {
 	const [phone, setPhone] = useState('')
 	const [password, setPassword] = useState('')
 	const [error, setError] = useState({ phone: '', password: '' })
 	const phoneDetails = useAuthStore((s) => s.phone)
-	const setUser = useAuthStore((s) => s.setUser)
+	const [ loading, setLoading ] = useState(false)
+	// const setUser = useAuthStore((s) => s.setUser)
+	const { setUser, setToken } = useAuthStore()
 
 	const [dialCode, setDialCode] = useState<dialCodeType>({
 		code: 'NG',
@@ -34,26 +37,36 @@ const LoginScreen = () => {
 	// 	fullPhoneNumber: string
 	// }
 	// const { showError } = useUniversalModal()
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
+		console.log('Logging in with:', { phone, password, dialCode })
 		try {
 			if (!phone) return setError({ ...error, phone: 'Phone Number is required' })
 			if (phone.length < 10) return setError({ ...error, phone: 'Invalid Phone Number' })
 			if (!password) return setError({ ...error, password: 'Password is required' })
-			if (password.length < 10)
-				return setError({ ...error, phone: 'Password must be more than 6 words' })
-
+			setLoading(true)
+			const fullPhoneNumber = `${dialCode.dial_code}${phone}`
+			console.log('Full Phone Number:', fullPhoneNumber)
+			const res = await AuthApi.login(fullPhoneNumber, password)
+			console.log('Login Response:', res)
+			setUser(res.user)
+			setToken(res.token)
 			setPhone({
 				dialCode: dialCode.dial_code,
 				phoneNumber: phone,
-				id: 'qwerty',
-				firstName: 'Yusuf',
+				fullPhoneNumber: fullPhoneNumber,
 			})
-			setUser({ name: 'John Doe', email: 'JohnDoe@gmail.com', id: 'qwerty' })
 			nav('/(app)/(home)')
-		} catch (error: unknown) {
-			console.log('err', error)
+		} catch (error: any) {
+			setError({
+				phone: '',
+				password: error?.response?.data?.message || 'Invalid phone number or password',
+			})
+		} finally {
+			setLoading(false)
+	
 		}
 	}
+	
 	useEffect(() => {
 		if (error?.password || error?.phone)
 			setTimeout(() => {
@@ -63,7 +76,7 @@ const LoginScreen = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<AuthWrapper onPress={handleSubmit} type="login">
+			<AuthWrapper onPress={handleSubmit} type="login" loading={loading}>
 				<View>
 					{!phoneDetails && (
 						<CustomInput

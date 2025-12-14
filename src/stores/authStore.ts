@@ -28,10 +28,12 @@ type AuthState = {
 	user: User | null
 	phone: Phone | null
 	kyc: Kyc | null
+	token: string | null
 	setUser: (user: User) => void
 	setPhone: (phone: Phone) => void
 	updatePhone: (data: Partial<Phone>) => void
 	updateKyc: (data: Partial<Kyc>) => void
+	setToken: (token: string) => void
 	updateTerms: (data: Partial<Kyc>) => void
 	clearUser: () => void
 	clearPhone: () => void
@@ -44,8 +46,10 @@ export const useAuthStore = create<AuthState>()(
 			user: null,
 			phone: null,
 			kyc: null,
+			token: null,
 			setUser: (user) => set({ user }),
 			setPhone: (phone) => set({ phone }),
+			setToken: (token) => set({ token }),
 			updatePhone: (data: any) =>
 				set((state) => ({
 					phone: { ...state.phone, ...data },

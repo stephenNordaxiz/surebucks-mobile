@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/stores/authStore';
 import axios from 'axios';
 
 const apiClient = axios.create({
@@ -8,7 +9,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   async (config) => {
     // Example using Zustand for token:
-    const token = globalThis?.authStore?.token; 
+    const token = useAuthStore.getState().token;
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

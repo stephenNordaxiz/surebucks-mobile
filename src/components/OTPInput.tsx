@@ -121,6 +121,7 @@ const OTPInput = ({
               onChangeText={(e) => changeOTP(e, index)}
               value={otpSet[index] ?? ""}
               keyboardType="number-pad"
+              returnKeyType="send"
               secureTextEntry={check}
               onFocus={() => handleFocus(index)}
               onBlur={handleBlur}

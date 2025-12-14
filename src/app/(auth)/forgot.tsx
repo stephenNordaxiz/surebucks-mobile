@@ -5,9 +5,11 @@ import { nav } from '@/utils/navigationService'
 import { useUniversalModal } from '@/hooks/useUniversalModal'
 import { normalizePhoneNumber } from '@/utils/checker'
 import { dialCodeType } from '@/types/dialCode'
+import { AuthApi } from '@/api/auth.api'
 
 const ForgotPassScreen = () => {
 	const [phone, setPhone] = useState('')
+	const [loading, setLoading] = useState(false)
 	const [dialCode, setDialCode] = useState<dialCodeType>({
 		code: 'NG',
 		currency: 'Nigerian Naira',
@@ -20,7 +22,7 @@ const ForgotPassScreen = () => {
 	})
 	const { showError } = useUniversalModal()
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		if (phone.length === 0) {
 			showError('Error', 'Phone number required')
 			return
@@ -30,16 +32,24 @@ const ForgotPassScreen = () => {
 			showError('Error', 'Please enter a valid Nigerian number')
 			return
 		}
+		setLoading(true)
 		const fullPhone = normalizePhoneNumber(phone, dialCode?.dial_code)
-
-		console.log(fullPhone)
-		nav('/verify', { from: 'forgot', phone: fullPhone })
+		try {
+			const res = await AuthApi.forgotPin(fullPhone)
+			console.log(res)
+			nav('/verify', { from: 'forgot', phone: fullPhone })
+		} catch (error: any) {
+			showError('Error', error.message || 'An error occurred')
+		} finally {
+			setLoading(false)
+		}
 	}
+
 	const handleDialCodeChange = (country: dialCodeType) => {
 		setDialCode(country)
 		console.log('Selected Country:', country)
 	}
-    
+
 	return (
 		<Screen
 			padded
@@ -64,7 +74,7 @@ const ForgotPassScreen = () => {
 						/>
 					</View>
 				</View>
-				<SubmitBtn onPress={handleSubmit} title={'Continue'} style={styles.button} />
+				<SubmitBtn onPress={handleSubmit} title={'Continue'} style={styles.button} loading={loading} />
 			</View>
 		</Screen>
 	)

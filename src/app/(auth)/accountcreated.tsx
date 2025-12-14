@@ -9,11 +9,11 @@ import { SIZES } from '@/constants'
 const WelcomeAboardScreen = () => {
 	const setUser = useAuthStore((s) => s.setUser)
 	const updatePhone = useAuthStore((s) => s.updatePhone)
-	const handleSubmit = () => {
-		updatePhone({ firstName: 'Yusuf' })
-		setUser({ name: 'John Doe', email: 'JohnDoe@gmail.com', id: 'qwerty' })
-		nav('/(app)/(home)')
-	}
+	// const handleSubmit = () => {
+	// 	updatePhone({ firstName: 'Yusuf' })
+	// 	setUser({ name: 'John Doe', email: 'JohnDoe@gmail.com', id: 'qwerty' })
+	// 	nav('/(app)/(home)')
+	// }
 	return (
 		<Screen style={styles.container}>
 			<View style={styles.container}>
@@ -36,7 +36,7 @@ const WelcomeAboardScreen = () => {
 				</View>
 			</View>
 			<View style={styles.buttonContainer}>
-				<SubmitBtn onPress={handleSubmit} title={'Proceed'} />
+				<SubmitBtn onPress={() => nav('/(app)/(home)')} title={'Proceed'} />
 			</View>
 		</Screen>
 	)
