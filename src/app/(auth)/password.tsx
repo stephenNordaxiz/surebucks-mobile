@@ -7,6 +7,7 @@ import { useUniversalModal } from '@/hooks/useUniversalModal'
 import { Modal, ScrollView, Text, TouchableOpacity } from 'react-native'
 import { AuthApi } from '@/api/auth.api'
 import { useAuthStore } from '@/stores/authStore'
+import { useModalStore } from '@/stores/modalStore'
 
 const PasswordScreen = () => {
 	const { from, phone, otp } = useLocalSearchParams()
@@ -18,29 +19,45 @@ const PasswordScreen = () => {
 	const [loading, setLoading] = useState(false)
 	const [showTerms, setShowTerms] = useState(false)
 	const { setUser } = useAuthStore()
+	const showModal = useModalStore((s) => s.showModal)
 
 	const { showSuccess } = useUniversalModal()
-	console.log({ from, phone, otp })
+	// console.log({ from, phone, otp })
 	const isCreateFlow = from === 'verify-to-new'
 
 	const handleContinue = () => {
 		if (!password || !confirmPassword) {
-			Alert.alert('Error', 'All fields are required')
+			showModal({
+				title: 'Error',
+				description: 'Please fill in all required fields',
+				type: 'error',
+				confirmText: 'OK',
+			})
 			return
 		}
 
 		if (password !== confirmPassword) {
-			Alert.alert('Error', 'Passwords do not match')
+			showModal({
+				title: 'Error',
+				description: 'Passwords do not match',
+				type: 'error',
+				confirmText: 'OK',
+			})
 			return
 		}
 
 		if (isCreateFlow && (!firstName || !lastName || !email)) {
-			Alert.alert('Error', 'Please complete all fields')
+			showModal({
+				title: 'Error',
+				description: 'Please complete all fields',
+				type: 'error',
+				confirmText: 'OK',
+			})
 			return
 		}
 
 		if (isCreateFlow) {
-		setShowTerms(true)
+			setShowTerms(true)
 		} else {
 			handleSubmit()
 		}
@@ -52,16 +69,16 @@ const PasswordScreen = () => {
 			setShowTerms(false)
 
 			if (isCreateFlow) {
-				const res =await AuthApi.completeRegistration(
+				const res = await AuthApi.completeRegistration(
 					phone as string,
 					otp as string,
 					`${firstName.trim()} ${lastName.trim()}`,
 					email.trim().toLowerCase(),
 					password,
 				)
-				setUser(res.user)
 				setLoading(false)
 				nav('/accountcreated')
+				setUser(res.user)
 				return
 			}
 
@@ -78,12 +95,12 @@ const PasswordScreen = () => {
 			setLoading(false)
 			setShowTerms(false)
 
-			Alert.alert(
-				'Error',
-				error?.response?.data?.message ||
-					error?.response?.data?.error ||
-					'Failed to complete registration. Please try again.',
-			)
+			showModal({
+				title: 'Error',
+				description: error?.response?.data?.error || error?.message || 'An error occurred',
+				type: 'error',
+				confirmText: 'OK',
+			})
 		}
 	}
 
@@ -104,11 +121,29 @@ const PasswordScreen = () => {
 						<View style={styles.divider} />
 
 						<ScrollView style={styles.content}>
-							<Text style={styles.sectionTitle}>Onboarding</Text>
+							<Text style={styles.sectionTitle}>1. Eligibility</Text>
 							<Text style={styles.text}>
 								Applicants must be 18 years or older with a valid BVN, active bank account, and
 								verifiable source of income. Previous loan history and credit score may affect
 								eligibility status.
+							</Text>
+							<Text style={styles.sectionTitle}>2. Loan Request</Text>
+							<Text style={styles.text}>
+								Loan amounts are determined based on eligibility assessment and income verification.
+								First-time borrowers may be eligible for lower amounts with increased limits after
+								successful repayments. Maximum loan term is 90 days.
+							</Text>
+							<Text style={styles.sectionTitle}>3. Loan Approval</Text>
+							<Text style={styles.text}>
+								All applications are subject to verification of provided information and a
+								comprehensive creditworthiness evaluation. Approval decisions are typically made
+								within 24 hours of submission.
+							</Text>
+							<Text style={styles.sectionTitle}>4. Repayment, Interest and Fees</Text>
+							<Text style={styles.text}>
+								Standard interest rate of 2% monthly on the principal amount. 5% late payment fee
+								applied to overdue amounts. Processing fee of 1% deducted at disbursement. Early
+								repayment is permitted with no additional penalty or fees.
 							</Text>
 
 							{/* Repeat or map your terms here */}
@@ -139,7 +174,7 @@ const PasswordScreen = () => {
 			<View style={styles.container}>
 				<View style={{ gap: 8 }}>
 					<Title
-						text={from === 'verify-to-new' ? 'Create a 6-digit password' : 'Reset Password'}
+						text={from === 'verify-to-new' ? 'Set up your account' : 'Reset Password'}
 						textWeight={'600'}
 						textSize={18}
 					/>

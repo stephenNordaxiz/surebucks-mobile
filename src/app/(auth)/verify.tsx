@@ -13,13 +13,16 @@ import { useLocalSearchParams } from "expo-router";
 import { COLORS } from "@/constants";
 import { nav } from "@/utils/navigationService";
 import { AuthApi } from "@/api/auth.api";
+import { useModalStore } from '@/stores/modalStore'
 
 const VerifyNumberScreen = () => {
   const phoneDetails = useAuthStore((s) => s.phone);
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [secondsLeft, setSecondsLeft] = useState(1800);
   const [loading, setLoading] = useState(false);
-  const { from, phone } = useLocalSearchParams();
+  const { from, phone, otpCode } = useLocalSearchParams();
+  const showModal = useModalStore((s) => s.showModal)
+
 
   // Convert array to single string
   const getOtpString = () => otp.join("");
@@ -56,8 +59,7 @@ const VerifyNumberScreen = () => {
 
       // console.log("Verifying OTP:", phoneToVerify, otpValue);
 
-      const res = await AuthApi.verifyOtp(phoneToVerify, otpValue);
-		console.log(res)
+       await AuthApi.verifyOtp(phoneToVerify, otpValue);
       nav("/password", {
         from: from === "register" ? "verify-to-new" : "verify-to-reset",
         phone: phoneToVerify,
@@ -65,12 +67,13 @@ const VerifyNumberScreen = () => {
       });
     } catch (error: any) {
 
-      Alert.alert(
-        "Verification Failed",
-        error?.response?.data?.error ||
-          error?.message ||
-          "An error occurred during verification."
-      );
+      showModal({
+        title: 'Verification Failed',
+        description: error?.response?.data?.error || error?.message || "An error occurred during verification.",
+        type: 'error',
+        confirmText: 'Try Again',
+      })
+        
     } finally {
       setLoading(false);
     }
@@ -147,6 +150,10 @@ const VerifyNumberScreen = () => {
               </Text>
             </Text>
           </Pressable>
+          <View style={{backgroundColor: 'red', borderRadius: 8, padding: 10, marginTop: 10}}>
+            <Text style={{color: 'white', fontSize: 20
+            }}>DEMO: Use code {otpCode} </Text>
+          </View>
         </View>
 
         <SubmitBtn

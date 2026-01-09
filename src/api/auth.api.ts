@@ -22,7 +22,9 @@ export const AuthApi = {
 
     login: async (phone: string, password: string) => {
         const payload = { phone, password };
+        console.log(payload)
         const response = await apiClient.post('/auth/login', payload);
+        console.log(response)
         return response.data;
     },
 

@@ -1,12 +1,21 @@
 import { useModalStore } from '@/stores/modalStore'
 import React from 'react'
 import { Modal, View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
+import SuccessCheckIcon from '@/assets/SuccessCheck.png'
+import ErrorCheckIcon from '@/assets/ErrorCheck.png'
 
 const typeColors = {
 	success: '#4CAF50',
 	error: '#D91515',
 	pending: '#FF9800',
 	default: '#4CAF50',
+}
+
+const typeIcons = {
+	success: SuccessCheckIcon,
+	error: ErrorCheckIcon,
+	pending: ErrorCheckIcon,
+	default: SuccessCheckIcon,
 }
 
 const UniversalModal = () => {
@@ -25,12 +34,14 @@ const UniversalModal = () => {
 	} = options
 
 	const confirmColor = typeColors[type] || typeColors.default
+	const resolvedIcon = icon || typeIcons[type] || typeIcons.default
+
 
 	return (
 		<Modal transparent visible={visible} animationType="fade">
 			<View style={styles.backdrop}>
 				<View style={styles.modal}>
-					{icon && <Image source={icon} style={styles.icon} resizeMode="contain" />}
+					{resolvedIcon && <Image source={resolvedIcon} style={styles.icon} resizeMode="contain" />}
 					{title && <Text style={styles.title}>{title}</Text>}
 					{description && <Text style={styles.description}>{description}</Text>}
 

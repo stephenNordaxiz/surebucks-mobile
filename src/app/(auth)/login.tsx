@@ -5,6 +5,8 @@ import { useAuthStore } from '@/stores/authStore'
 import { dialCodeType } from '@/types/dialCode'
 import { nav } from '@/utils/navigationService'
 import { AuthApi } from '@/api/auth.api'
+import { useModalStore } from '@/stores/modalStore'
+
 
 const LoginScreen = () => {
 	const [phone, setPhone] = useState('')
@@ -14,6 +16,8 @@ const LoginScreen = () => {
 	const [ loading, setLoading ] = useState(false)
 	// const setUser = useAuthStore((s) => s.setUser)
 	const { setUser, setToken } = useAuthStore()
+	const showModal = useModalStore((s) => s.showModal)
+	
 
 	const [dialCode, setDialCode] = useState<dialCodeType>({
 		code: 'NG',
@@ -28,7 +32,7 @@ const LoginScreen = () => {
 
 	const handleDialCodeChange = (country: dialCodeType) => {
 		setDialCode(country)
-		console.log('Selected Country:', country)
+		// console.log('Selected Country:', country)
 	}
 	// type Phone = {
 	// 	firstName?: string
@@ -45,9 +49,7 @@ const LoginScreen = () => {
 			if (!password) return setError({ ...error, password: 'Password is required' })
 			setLoading(true)
 			const fullPhoneNumber = `${dialCode.dial_code}${phone}`
-			console.log('Full Phone Number:', fullPhoneNumber)
 			const res = await AuthApi.login(fullPhoneNumber, password)
-			console.log('Login Response:', res)
 			setUser(res.user)
 			setToken(res.token)
 			setPhone({
@@ -55,11 +57,13 @@ const LoginScreen = () => {
 				phoneNumber: phone,
 				fullPhoneNumber: fullPhoneNumber,
 			})
-			nav('/(app)/(home)')
+			nav('/(app)/tabs/home')
 		} catch (error: any) {
-			setError({
-				phone: '',
-				password: error?.response?.data?.message || 'Invalid phone number or password',
+			showModal({
+				title: 'Login Error',
+				description: error.response?.data?.error || 'An unexpected error occurred. Please try again.',
+				type: 'error',
+				confirmText: 'OK',
 			})
 		} finally {
 			setLoading(false)

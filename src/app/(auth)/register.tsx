@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { nav } from '@/utils/navigationService'
 import { dialCodeType } from '@/types/dialCode'
 import { AuthApi } from '@/api/auth.api'
+import UniversalModal from '@/components/modals/UniversalModal'
 // import { PhoneNumber } from 'libphonenumber-js'
 // import { useThemeStore } from '@/stores/themeStore'
 
@@ -62,8 +63,8 @@ const RegisterScreen = () => {
 		try {
 			const fullPhone = phoneDetails?.fullPhoneNumber
 			const res = await AuthApi.requestOtp(fullPhone as string)
-			console.log(res)
-			nav('/verify', { from: 'register' })
+			// console.log(res)
+			nav('/verify', { from: 'register', otpCode: res.otp })
 		} catch (error: any) {
 			showError("Error", error?.response?.data?.error || "Failed to send OTP")
 		} finally {

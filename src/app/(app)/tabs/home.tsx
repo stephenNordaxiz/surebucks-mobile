@@ -31,6 +31,8 @@ const HomeScreen = () => {
 	const styles = createStyles(theme)
 	const { loans } = useLoanStore()
 	const [activeLoan, setActiveLoan] = useState<any>([])
+	const user = useAuthStore((s) => s.user)
+	
 	const handleNotify = () => {
 		nav('/profile/notifications')
 	}
@@ -127,7 +129,7 @@ const HomeScreen = () => {
 							<View>
 								<Title text={greeting()} textColor="white" />
 								<Title
-									text={'John Doe'}
+									text={`${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim()}
 									textSize={16}
 									textWeight={'600'}
 									textColor={theme.secondary}
@@ -173,7 +175,7 @@ const HomeScreen = () => {
 					{/* <SubmitBtn onPress={delLoan} title={'Del'} /> */}
 					<SubmitBtn
 						onPress={handleLoan}
-						title={activeLoan?.length > 0 ? 'Repay Loan' : 'Get Loan now'}
+						title={activeLoan?.length > 0 ? 'Repay Loan' : 'Get Loan Limit'}
 					/>
 					{loans.length > 1 && <ProcessItems />}
 				</View>

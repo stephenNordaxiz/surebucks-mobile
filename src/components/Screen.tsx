@@ -15,6 +15,7 @@ import { useThemeStore } from '@/stores/themeStore'
 import { useRouter } from 'expo-router'
 import { Ionicons, AntDesign } from '@expo/vector-icons'
 
+
 type ScreenProps = {
   children: ReactNode
   style?: ViewStyle
@@ -72,7 +73,7 @@ const Screen = ({
         >
           {showBackButton && (
             <TouchableOpacity onPress={() => router.back()} style={styles.iconLeft}>
-              <AntDesign name="arrowleft" size={20} color={theme.tertiary} />
+              <AntDesign name="arrow-left" size={20} color={theme.tertiary} />
             </TouchableOpacity>
           )}
           <Text style={[styles.title, { color: theme.tertiary }]}>

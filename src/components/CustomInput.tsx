@@ -251,7 +251,7 @@ const CInputField: React.FC<CustomInputFieldProps> = ({
 				return (
 					<View style={[styles.iconContainer, { backgroundColor: currentTheme?.icon }]}>
 						<Ionicons
-							name="mail"
+							name="mail-outline"
 							size={20}
 							color={
 								isFocused ? currentTheme?.secondary : errorMessage ? 'red' : currentTheme?.primary
@@ -454,7 +454,7 @@ const CInputField: React.FC<CustomInputFieldProps> = ({
 									<CountryFlag isoCode={country?.code?.toLowerCase() || 'ng'} size={22} />
 								</View>
 								<AntDesign
-									name="caretdown"
+									name="caret-down"
 									size={14}
 									color={hexToRgba(currentTheme.tertiary, 0.6)}
 								/>
