@@ -1,3 +1,4 @@
+import { forgotPassword } from "services/user";
 import apiClient from "./axios.config";
 
 export const AuthApi = {
@@ -28,9 +29,9 @@ export const AuthApi = {
         return response.data;
     },
 
-    forgotPin: async (phone: string) => {
+    forgotPassword: async (phone: string) => {
         const payload = { phone };
-        const response = await apiClient.post('/auth/forgot-pin', payload);
+        const response = await apiClient.post('/auth/forgot-password', payload);
         return response.data;
     },
 

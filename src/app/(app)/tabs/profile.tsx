@@ -24,6 +24,7 @@ const ProfileScreen = () => {
 	const { clearAll: clearUser } = useAuthStore()
 	const [showModal, setShowModal] = useState<boolean>(false)
 	const [delModal, setDelModal] = useState<boolean>(false)
+	const user = useAuthStore((s) => s.user)
 
 	type ProfileType = {
 		id: number
@@ -80,7 +81,7 @@ const ProfileScreen = () => {
 		},
 		{
 			id: 3,
-			icon: <AntDesign name="customerservice" size={24} color={theme.primary} />,
+			icon: <AntDesign name="customer-service" size={24} color={theme.primary} />,
 			text: 'Support Centre',
 			nav: '/profile/support',
 		},
@@ -111,8 +112,8 @@ const ProfileScreen = () => {
 					<Ionicons name="camera-outline" size={18} color="black" style={styles.icon} />
 				</View>
 				<View style={{ gap: 6 }}>
-					<Title text={'John Doe'} textColor="black" textSize={25} textWeight={'600'} center />
-					<Title text={'LJohn@gmail.com'} textSize={14} center />
+					<Title text={`${user?.first_name ?? ''} ${user?.last_name ?? ''}`} textColor="black" textSize={25} textWeight={'600'} center />
+					<Title text={user?.email ?? ''} textSize={14} center />
 					<Pressable style={styles.button}>
 						<Title text={'Edit Profile'} textColor="white" textWeight={'600'} />
 					</Pressable>

@@ -43,13 +43,16 @@
       "typeRoutes": true,
       "tsconfigPaths": true
     },
+    "sdkVersion": "54.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "e006da23-4a66-4d4b-9eeb-f3ba6e1ef81b"
+        "projectId": "8961165b-0ff9-487a-8a4b-ff185297dbb1"
       }
-    },
-    "sdkVersion": "54.0.0",
-    "platforms": ["ios", "android"]
+    }
   }
 }

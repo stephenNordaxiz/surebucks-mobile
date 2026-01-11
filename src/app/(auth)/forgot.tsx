@@ -35,9 +35,9 @@ const ForgotPassScreen = () => {
 		setLoading(true)
 		const fullPhone = normalizePhoneNumber(phone, dialCode?.dial_code)
 		try {
-			const res = await AuthApi.forgotPin(fullPhone)
-			console.log(res)
-			nav('/verify', { from: 'forgot', phone: fullPhone })
+			const res = await AuthApi.forgotPassword(fullPhone)
+			console.log('res', res)
+			nav('/verify', { from: 'forgot', phone: fullPhone ,  otpCode: res?.otp })
 		} catch (error: any) {
 			showError('Error', error.message || 'An error occurred')
 		} finally {
