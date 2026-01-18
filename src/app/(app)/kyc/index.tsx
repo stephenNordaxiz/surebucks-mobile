@@ -21,25 +21,32 @@ const KycScreen = () => {
 		},
 		{
 			id: 2,
-			text: 'Extra information',
+			text: 'Contact information',
 			icon: <FontAwesome6 name="file-circle-plus" size={20} color="white" />,
 			active: kyc?.extra,
 			route: '/kyc/extra',
 		},
+		// {
+		// 	id: 3,
+		// 	text: 'ID Card/ Photo upload',
+		// 	icon: <MaterialCommunityIcons name="card-account-details-outline" size={20} color="white" />,
+		// 	active: kyc?.doc,
+		// 	route: '/kyc/idcard',
+		// },
 		{
 			id: 3,
-			text: 'ID Card/ Photo upload',
+			text: 'Connect With Mono',
 			icon: <MaterialCommunityIcons name="card-account-details-outline" size={20} color="white" />,
 			active: kyc?.doc,
 			route: '/kyc/idcard',
 		},
-		{
-			id: 4,
-			text: 'Selfie Capture',
-			icon: <MaterialCommunityIcons name="camera-iris" size={20} color="white" />,
-			active: kyc?.capture,
-			route: '/kyc/photo',
-		},
+		// {
+		// 	id: 4,
+		// 	text: 'Selfie Capture',
+		// 	icon: <MaterialCommunityIcons name="camera-iris" size={20} color="white" />,
+		// 	active: kyc?.capture,
+		// 	route: '/kyc/photo',
+		// },
 	]
 
 	return (

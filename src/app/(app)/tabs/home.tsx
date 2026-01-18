@@ -32,14 +32,15 @@ const HomeScreen = () => {
 	const { loans } = useLoanStore()
 	const [activeLoan, setActiveLoan] = useState<any>([])
 	const user = useAuthStore((s) => s.user)
-	
+	const isKycComplete = !!kyc?.basic && !!kyc?.extra && !!kyc?.doc && !!kyc?.capture
+
 	const handleNotify = () => {
 		nav('/profile/notifications')
 	}
 	const handleProfile = () => {
 		nav('/tabs/profile')
 	}
-	
+
 	const handleLoan = () => {
 		if (activeLoan?.length > 0) {
 			nav('/repay', { id: activeLoan[0]?.id })
@@ -173,10 +174,21 @@ const HomeScreen = () => {
 					)}
 					{/* {activeLoan.length > 0 ? null : <ProcessItems />} */}
 					{/* <SubmitBtn onPress={delLoan} title={'Del'} /> */}
-					<SubmitBtn
+					{/* <SubmitBtn
 						onPress={handleLoan}
 						title={activeLoan?.length > 0 ? 'Repay Loan' : 'Get Loan Limit'}
+					/> */}
+					<SubmitBtn
+						onPress={handleLoan}
+						title={
+							activeLoan?.length > 0
+								? 'Repay Loan'
+								: isKycComplete
+									? 'Get Loan Limit'
+									: 'Complete KYC'
+						}
 					/>
+
 					{loans.length > 1 && <ProcessItems />}
 				</View>
 
